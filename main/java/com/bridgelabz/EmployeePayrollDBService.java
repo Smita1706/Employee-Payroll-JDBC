@@ -9,11 +9,19 @@ import java.util.Scanner;
 
 public class EmployeePayrollDBService {
 	private PreparedStatement employeePayrollDataStatement;
-	
+	private static EmployeePayrollDBService employeePayrollDBService;
     Connection connection = null;
     Statement statement = null;
     Scanner scanner = new Scanner(System.in);
-    
+    public EmployeePayrollDBService() {
+    }
+
+    public static EmployeePayrollDBService getInstance() {
+        if (employeePayrollDBService == null) {
+            employeePayrollDBService = new EmployeePayrollDBService();
+        }
+        return employeePayrollDBService;
+    }
     private Connection getConnection() throws SQLException {
         String dbURL = "jdbc:mysql://localhost:3306/payroll_service";
         String userName="root";
@@ -100,5 +108,17 @@ public class EmployeePayrollDBService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<EmployeePayrollData> getEmployeePayrollDataByDataRange(LocalDate startDate, LocalDate endDate) {
+        String query = String.format("select * from employee_payroll where start BETWEEN CAST('%s' as DATE) and CAST('%s' as DATE);", startDate.toString(), endDate.toString());
+        try (Connection connection = this.getConnection()){
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            return this.getEmployeePayrollData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
