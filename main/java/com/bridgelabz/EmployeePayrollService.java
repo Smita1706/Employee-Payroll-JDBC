@@ -45,4 +45,7 @@ public class EmployeePayrollService {
 	    public List<EmployeePayrollData> getEmployeePayrollDataByGivenDataRange(LocalDate startDate, LocalDate endDate) {
 	        return employeePayrollDBService.getEmployeePayrollDataByDataRange(startDate,endDate);
 	    }
+	    public double performVariousOperations(String average, String m) {
+	        return employeePayrollDBService.performVariousOperationsOf(average,m);
+	    }
 }

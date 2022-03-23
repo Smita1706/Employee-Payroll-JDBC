@@ -111,7 +111,7 @@ public class EmployeePayrollDBService {
     }
 
     public List<EmployeePayrollData> getEmployeePayrollDataByDataRange(LocalDate startDate, LocalDate endDate) {
-        String query = String.format("select * from employee_payroll where start BETWEEN CAST('%s' as DATE) and CAST('%s' as DATE);", startDate.toString(), endDate.toString());
+        String query = String.format("select * from payroll_service where start BETWEEN CAST('%s' as DATE) and CAST('%s' as DATE);", startDate.toString(), endDate.toString());
         try (Connection connection = this.getConnection()){
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -120,5 +120,18 @@ public class EmployeePayrollDBService {
             e.printStackTrace();
         }
         return null;
+    }
+    public double performVariousOperationsOf(String average, String gender) {
+        String query = String.format("select %s(salary),gender from payroll_service where gender = '%s' group by gender;",
+                average, gender);
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            resultSet.next();
+            return resultSet.getDouble(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
